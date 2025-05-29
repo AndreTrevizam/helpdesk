@@ -1,0 +1,21 @@
+{
+  "name": "helpdesk",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts"
+  },
+  "author": "André Carvalho Trevizam",
+  "license": "ISC",
+  "description": "Sistema de Gerenciamento de Chamados",
+  "dependencies": {
+    "@prisma/client": "^6.8.2",
+    "express": "^4.21.2",
+    "prisma": "^6.8.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
