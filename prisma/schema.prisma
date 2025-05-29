@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  Admin
+  Technician
+  Client
+}
+
+enum EnumService {
+  InstalacaoSoftwares
+  InstalacaoHardwares
+  DiagnosticoVirus
+  SuporteImpressoras
+  SuportePerifericos
+  SolucaoInternet
+  Backup
+  OtimizacaoSistemaOperacional
+  ConfiguracaoVPN
+}
+
+enum Status {
+  Open
+  InService
+  Closed
+}
+
+model User {
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  password String
+  filename String?
+
+  role UserRole @default(Client)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  technician Technician?
+  calls      Call[]
+
+  @@map("users")
+}
+
+model Technician {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  availableTimes AvailableTime[]
+  calls          Call[]
+
+  @@map("technicians")
+}
+
+model AvailableTime {
+  id           String     @id @default(uuid())
+  time         String
+  technicianId String     @map("technician_id")
+  technician   Technician @relation(fields: [technicianId], references: [id])
+
+  @@map("available_times")
+}
+
+model Call {
+  id       String        @id @default(uuid())
+  services EnumService[]
+  status   Status        @default(Open)
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  technicianId String     @map("technician_id")
+  technician   Technician @relation(fields: [technicianId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@map("calls")
+}
