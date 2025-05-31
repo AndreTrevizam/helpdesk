@@ -54,19 +54,10 @@ model Technician {
   userId String @unique @map("user_id")
   user   User   @relation(fields: [userId], references: [id])
 
-  availableTimes AvailableTime[]
+  availableTimes String[]
   calls          Call[]
 
   @@map("technicians")
-}
-
-model AvailableTime {
-  id           String     @id @default(uuid())
-  time         String
-  technicianId String     @map("technician_id")
-  technician   Technician @relation(fields: [technicianId], references: [id])
-
-  @@map("available_times")
 }
 
 model Call {
