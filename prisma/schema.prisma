@@ -45,7 +45,7 @@ model User {
 model Technician {
   id     String @id @default(uuid())
   userId String @unique @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   availableTimes String[]
   calls          Call[]
@@ -54,15 +54,17 @@ model Technician {
 }
 
 model Call {
-  id      String    @id @default(uuid())
-  services CallService[]
-  status  Status    @default(Open)
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  services    CallService[]
+  status      Status        @default(Open)
 
   userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   technicianId String     @map("technician_id")
-  technician   Technician @relation(fields: [technicianId], references: [id])
+  technician   Technician @relation(fields: [technicianId], references: [id], onDelete: Cascade)
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
@@ -83,13 +85,12 @@ model Service {
 }
 
 model CallService {
-  id String @id @default(uuid())
-  callId String @map("call_id")
-  call Call @relation(fields: [callId], references: [id])
-  serviceId String @map("service_id")
-  service Service @relation(fields: [serviceId], references: [id])
+  id        String  @id @default(uuid())
+  callId    String  @map("call_id")
+  call      Call    @relation(fields: [callId], references: [id], onDelete: Cascade)
+  serviceId String  @map("service_id")
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
   @@unique([callId, serviceId]) // Um serviço não pode ser repetido no mesmo chamado
-
   @@map("call_services")
 }
