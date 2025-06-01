@@ -79,7 +79,7 @@ class UsersControllers {
     })
 
     if (!userExists) {
-      throw new AppError("E-mail já cadastrado!")
+      throw new AppError("Usuário não encontrado")
     }
 
     const updatedUser = await prisma.user.update({
