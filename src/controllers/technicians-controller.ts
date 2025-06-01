@@ -4,6 +4,7 @@ import { UserRole } from "@prisma/client";
 import { prisma } from "@/database/prisma";
 import { z } from "zod";
 import { availableHours } from "@/utils/available-hours";
+import { AppError } from "@/utils/AppError";
 
 class TechniciansController {
   async create(req: Request, res: Response) {
@@ -89,6 +90,42 @@ class TechniciansController {
         totalPages: totalPages > 0 ? totalPages : 1
       }
     })
+  }
+
+  async show(req: Request, res: Response) {
+    const userId = req.user?.id
+
+    if (!userId) {
+      throw new AppError("Usuário não existe")
+    }
+
+    const technician = await prisma.technician.findFirst({
+      where: { userId }
+    })
+
+    const calls = await prisma.call.findMany({
+      where: { technicianId: technician?.id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            filename: true
+          }
+        },
+        services: {
+          include: {
+            service: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: "desc"
+      }
+    })
+
+    res.json(calls)
   }
 }
 
