@@ -4,6 +4,8 @@ import { sessionsRoutes } from "./sessions-routes";
 import { ensureAuthenticated } from "@/middlewares/ensure-authenticated";
 import { techniciansRoutes } from "./technicians-routes";
 import { servicesRoutes } from "./services-routes";
+import { callsRoutes } from "./calls-routes";
+import { clientsRoutes } from "./clients-routes";
 
 const routes = Router()
 
@@ -15,5 +17,7 @@ routes.use("/sessions", sessionsRoutes)
 routes.use(ensureAuthenticated)
 routes.use("/technicians", techniciansRoutes)
 routes.use("/services", servicesRoutes)
+routes.use("/calls", callsRoutes)
+routes.use("/clients", clientsRoutes)
 
 export { routes }
