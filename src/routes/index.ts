@@ -2,7 +2,9 @@ import { Router } from "express";
 import { userRoutes } from "./users-routes";
 import { sessionsRoutes } from "./sessions-routes";
 import { ensureAuthenticated } from "@/middlewares/ensure-authenticated";
-import { adminRoutes } from "./admin-routes";
+import { techniciansRoutes } from "./technicians-routes";
+import { servicesRoutes } from "./services-routes";
+import { adminsRoutes } from "./admin-routes";
 
 const routes = Router()
 
@@ -12,6 +14,8 @@ routes.use("/sessions", sessionsRoutes)
 
 // Rotas privadas
 routes.use(ensureAuthenticated)
-routes.use("/admin", adminRoutes)
+routes.use("/technicians", techniciansRoutes)
+routes.use("/services", servicesRoutes)
+routes.use("/admin", adminsRoutes)
 
 export { routes }
