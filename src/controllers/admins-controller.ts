@@ -1,33 +1,90 @@
 import { Request, Response } from "express";
-import { CreateUserService } from "@/services/createUserService";
-import { UserRole } from "@prisma/client";
 import { prisma } from "@/database/prisma";
 import { z } from "zod";
-import { availableHours } from "@/utils/available-hours";
+import { AppError } from "@/utils/AppError";
 
 class AdminsController {
-  async create(req: Request, res: Response) {
-    // Força a role a ser Technician
-    req.body.role = UserRole.Technician
-
-    const createUserService = new CreateUserService()
-    const user = await createUserService.createUser(req, res)
-
-    // Verifica se o horario é valido a partir da array definida
-    const bodySchema = z.object({
-      availableTimes: z.array(z.enum(availableHours))
+  async indexClients(req: Request, res: Response) {
+    const querySchema = z.object({
+      name: z.string().optional().default(""),
+      page: z.coerce.number().optional().default(1),
+      perPage: z.coerce.number().optional().default(5)
     })
 
-    const { availableTimes } = bodySchema.parse(req.body)
+    const { name, page, perPage } = querySchema.parse(req.query)
 
-    await prisma.technician.create({
-      data: {
-        userId: user.id,
-        availableTimes
+    const skip = (page - 1) * perPage
+
+    const users = await prisma.user.findMany({
+      skip,
+      take: perPage,
+      where: {
+        name: {
+          contains: name.trim()
+        },
+        role: 'Client'
+      },
+      orderBy: {
+        createdAt: "desc"
       }
     })
 
-    res.status(201).json()
+    const totalRecords = await prisma.user.count({
+      where: {
+        name: {
+          contains: name.trim()
+        },
+        role: 'Client'
+      }
+    })
+
+    const totalPages = Math.ceil(totalRecords / perPage)
+
+    const usersWithoutPassword = users.map(({ password, ...user }) => user)
+
+    res.json({
+      users: usersWithoutPassword,
+      pagination: {
+        page,
+        perPage,
+        totalRecords,
+        totalPages: totalPages > 0 ? totalPages : 1
+      }
+    })
+  }
+
+  async update(req: Request, res: Response) {
+    const bodySchema = z.object({
+      name: z.string().trim().min(3, { message: "O nome de ter no mínimo 3 letras" }),
+      email: z.string().email(),
+    })
+
+    const paramsSchema = z.object({
+      userId: z.string().uuid()
+    })
+
+    const { userId } = paramsSchema.parse(req.params)
+    const { name, email } = bodySchema.parse(req.body)
+
+    const userExists = await prisma.user.findFirst({
+      where: { id: userId }
+    })
+
+    if (!userExists) {
+      throw new AppError("E-mail já cadastrado!")
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name,
+        email
+      }
+    })
+
+    const { password, ...userWithoutPassword} = updatedUser
+
+    res.json(userWithoutPassword)
   }
 }
 
