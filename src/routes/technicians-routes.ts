@@ -6,7 +6,7 @@ const techniciansRoutes = Router()
 const techniciansController = new TechniciansController()
 
 techniciansRoutes.use(verifyUserAuthorization(["Admin"]))
-techniciansRoutes.post("/", techniciansController.createTechnician)
-techniciansRoutes.get("/", techniciansController.indexTechnicians)
+techniciansRoutes.post("/", techniciansController.create)
+techniciansRoutes.get("/", techniciansController.index)
 
 export { techniciansRoutes }

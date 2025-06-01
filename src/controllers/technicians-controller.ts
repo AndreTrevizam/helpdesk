@@ -6,7 +6,7 @@ import { z } from "zod";
 import { availableHours } from "@/utils/available-hours";
 
 class TechniciansController {
-  async createTechnician(req: Request, res: Response) {
+  async create(req: Request, res: Response) {
     // Força a role a ser Technician
     req.body.role = UserRole.Technician
 
@@ -30,7 +30,7 @@ class TechniciansController {
     res.status(201).json()
   }
 
-  async indexTechnicians(req: Request, res: Response) {
+  async index(req: Request, res: Response) {
     const querySchema = z.object({
       name: z.string().optional().default(""),
       page: z.coerce.number().optional().default(1),
