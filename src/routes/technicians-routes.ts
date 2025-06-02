@@ -5,15 +5,9 @@ import { verifyUserAuthorization } from "@/middlewares/verify-user-authorization
 const techniciansRoutes = Router()
 const techniciansController = new TechniciansController()
 
-techniciansRoutes.get(
-  "/my-calls", 
-  verifyUserAuthorization(["Technician"]),
-  techniciansController.show
-)
 
-techniciansRoutes.use(verifyUserAuthorization(["Admin"]))
-techniciansRoutes.post("/", techniciansController.create)
-techniciansRoutes.get("/", techniciansController.index)
-
+techniciansRoutes.use(verifyUserAuthorization(["Technician"]))
+techniciansRoutes.get("/", techniciansController.show)
+techniciansRoutes.patch("/:callId", techniciansController.update)
 
 export { techniciansRoutes }
