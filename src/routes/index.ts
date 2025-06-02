@@ -6,6 +6,7 @@ import { techniciansRoutes } from "./technicians-routes";
 import { servicesRoutes } from "./services-routes";
 import { callsRoutes } from "./calls-routes";
 import { clientsRoutes } from "./clients-routes";
+import { adminsRoutes } from "./admins-routes";
 
 const routes = Router()
 
@@ -19,5 +20,6 @@ routes.use("/technicians", techniciansRoutes)
 routes.use("/services", servicesRoutes)
 routes.use("/calls", callsRoutes)
 routes.use("/clients", clientsRoutes)
+routes.use("/admins", adminsRoutes)
 
 export { routes }
