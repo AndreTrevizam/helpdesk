@@ -75,8 +75,16 @@ class CallsController {
         title: {
           contains: name.trim()
         }
+      },
+      include: {
+        services: {
+          include: {
+            service: true
+          }
+        }
       }
     })
+
 
     const totalRecords = await prisma.call.count({
       where: {
@@ -89,8 +97,16 @@ class CallsController {
 
     const totalPages = Math.ceil(totalRecords / perPage)
 
+    const callsWithTotal = calls.map(call => {
+      const totalAmount = call.services.reduce((sum, cs) => sum + cs.service.amount, 0)
+      return {
+        ...call,
+        totalAmount: Number(totalAmount.toFixed(2))
+      }
+    })
+
     res.json({
-      calls,
+      callsWithTotal,
       pagination: {
         page,
         perPage,
