@@ -7,9 +7,9 @@ import { AppError } from "@/utils/AppError";
 class UsersControllers {
   async create(req: Request, res: Response) {
     const createUserService = new CreateUserService()
-    await createUserService.createUser(req, res)
+    const user = await createUserService.createUser(req, res)
 
-    res.status(201).json()
+    res.status(201).json(user)
   }
 
   async index(req: Request, res: Response) {
