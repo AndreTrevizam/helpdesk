@@ -37,7 +37,6 @@ class SessionsController {
     // O secret garante a autenticidade do token
     // O objeto define no subject o identificador do usuario
     // O expiresIn é o tempo de expiração do token
-    console.log({ secret, expiresIn, userId: user.id, role: user.role })
     const token = sign({ role: user.role }, secret, {
       subject: user.id,
       expiresIn
