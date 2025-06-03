@@ -7,6 +7,7 @@ import { servicesRoutes } from "./services-routes";
 import { callsRoutes } from "./calls-routes";
 import { clientsRoutes } from "./clients-routes";
 import { adminsRoutes } from "./admins-routes";
+import { callStatusRoutes } from "./call-status";
 
 const routes = Router()
 
@@ -21,5 +22,6 @@ routes.use("/services", servicesRoutes)
 routes.use("/calls", callsRoutes)
 routes.use("/clients", clientsRoutes)
 routes.use("/admins", adminsRoutes)
+routes.use("/call-status", callStatusRoutes)
 
 export { routes }
