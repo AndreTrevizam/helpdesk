@@ -7,7 +7,7 @@ class ServicesController {
   async createService(req: Request, res: Response) {
     const bodySchema = z.object({
       name: z.string().trim().min(1, { message: "De um nome para o serviço" }),
-      amount: z.coerce.number()
+      amount: z.coerce.number().gt(0, { message: "O valor deve ser maior que 0" })
     })
 
     const { name, amount } = bodySchema.parse(req.body)
