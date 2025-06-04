@@ -24,9 +24,9 @@ class SessionsController {
       throw new AppError("E-mail ou senha inválidos!")
     }
 
-    const validPassword = await compare(password, user.password)
+    const matchedPassword = await compare(password, user.password)
 
-    if (!validPassword) {
+    if (!matchedPassword) {
       throw new AppError("E-mail ou senha inválidos!")
     }
 
