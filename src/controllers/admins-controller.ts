@@ -6,6 +6,7 @@ import { z } from "zod";
 import { availableHours } from "@/utils/available-hours";
 
 class AdminsController {
+  // Criação de um técnico
   async create(req: Request, res: Response) {
     // Força a role a ser Technician
     req.body.role = UserRole.Technician
