@@ -51,8 +51,8 @@ describe("Users Controller", () => {
         })
     })
 
-    it("Should update name and email of a user (ADMIN ONLY)", async() => {
-        const user = await prisma.user.findFirst({ where: { id: user_id}})
+    it("Should update name and email of a user (ADMIN ONLY)", async () => {
+        const user = await prisma.user.findFirst({ where: { id: user_id } })
 
         expect(user).not.toBeNull()
 
@@ -66,12 +66,15 @@ describe("Users Controller", () => {
                 email: "userpatch@user.com"
             })
 
-        // TODO
-        expect(response).toBe()
+        expect(response.status).toBe(200)
+        expect(response.body).toBeInstanceOf(Object)
+        expect(response.body.email).toBe("userpatch@user.com")
+
     })
 
     afterAll(async () => {
         await prisma.user.delete({ where: { id: user_id } })
+        await prisma.user.delete({ where: { email: "admin@test.com" } })
         await prisma.$disconnect
     })
 })
