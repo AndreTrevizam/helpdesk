@@ -38,7 +38,8 @@ class ServicesController {
       take: perPage,
       where: {
         name: {
-          contains: name.trim()
+          contains: name.trim(),
+          mode: 'insensitive'
         }
       }
     })
@@ -46,7 +47,8 @@ class ServicesController {
     const totalRecords = await prisma.service.count({
       where: {
         name: {
-          contains: name.trim()
+          contains: name.trim(),
+          mode: 'insensitive'
         }
       }
     })
@@ -79,23 +81,17 @@ class ServicesController {
       where: { id }
     })
 
-    if (service?.status == "Active") {
-      await prisma.service.update({
-        where: { id },
-        data: {
-          status: 'Inactive'
-        }
-      })
-    } else {
-      await prisma.service.update({
-        where: { id },
-        data: {
-          status: 'Active'
-        }
-      })
-    }
+    // é ativo? se sim ativo, se não inativo
+    const newStatus = service?.status === "Active" ? "Inactive" : "Active"
 
-    res.json()
+    const updatedStatus = await prisma.service.update({
+      where: { id },
+      data: {
+        status: newStatus
+      }
+    })
+
+    res.json(updatedStatus)
   }
 }
 
