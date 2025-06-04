@@ -1,7 +1,6 @@
 import request from "supertest"
 import { app } from "@/app"
 import { prisma } from "@/database/prisma"
-import { number } from "zod/v4"
 
 describe("Services Controller", () => {
   let service_id: string
@@ -29,7 +28,7 @@ describe("Services Controller", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Service Test",
-        amount: 14550
+        amount: 145.50
       })
 
     service_id = response.body.id
@@ -52,17 +51,24 @@ describe("Services Controller", () => {
   })
 
   it("Should update the status to Inactive or Active", async () => {
-    const existingService = await prisma.service.findFirst({
-      where: { id: "481459fe-3397-4524-8a67-f01a49da1dff" }
-    })
+    const serviceResponse = await request(app)
+      .post("/services")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Service Test",
+        amount: 145.50
+      })
 
-    expect(existingService).not.toBeNull()
+    expect(serviceResponse).not.toBeNull()
 
-    const previousStatus = existingService?.status
+    const previousStatus = serviceResponse?.status
 
     const response = await request(app)
-      .patch(`/services/${existingService?.id}`)
+      .patch(`/services/${serviceResponse?.body.id}`)
       .set("Authorization", `Bearer ${token}`)
+
+
+    service_id = response.body.id
 
     expect(response.status).toBe(200)
     expect(response.body.status).not.toBe(previousStatus)
