@@ -3,7 +3,7 @@ import { app } from "@/app"
 import { prisma } from "@/database/prisma"
 
 describe("Services Controller", () => {
-  let service_id: string
+  let service_ids: string[] = []
   let token: string
 
   beforeAll(async () => {
@@ -31,7 +31,7 @@ describe("Services Controller", () => {
         amount: 145.50
       })
 
-    service_id = response.body.id
+    service_ids.push(response.body.id)
 
     expect(response.status).toBe(201)
     expect(response.body.name).toBe("Service Test")
@@ -68,7 +68,7 @@ describe("Services Controller", () => {
       .set("Authorization", `Bearer ${token}`)
 
 
-    service_id = response.body.id
+    service_ids.push(response.body.id)
 
     expect(response.status).toBe(200)
     expect(response.body.status).not.toBe(previousStatus)
@@ -76,7 +76,7 @@ describe("Services Controller", () => {
   })
 
   afterAll(async () => {
-    await prisma.service.delete({ where: { id: service_id } })
+    await prisma.service.deleteMany({ where: { id: { in: service_ids } } })
     await prisma.user.delete({ where: { email: "admin@test.com" } })
     await prisma.$disconnect()
   })
