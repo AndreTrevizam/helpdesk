@@ -8,7 +8,6 @@ class CallsController {
     const bodySchema = z.object({
       title: z.string().trim().min(1, { message: "De um título para o chamado" }),
       description: z.string().trim().min(1, { message: "De uma descrição para o chamado" }),
-      technicianId: z.string().uuid(),
       serviceId: z.string().uuid()
     })
 
@@ -18,14 +17,22 @@ class CallsController {
       throw new AppError("Usuário não existe")
     }
 
-    const { title, description, technicianId, serviceId } = bodySchema.parse(req.body)
+    const { title, description, serviceId } = bodySchema.parse(req.body)
+
+    const technicians = await prisma.technician.findMany()
+
+    if (technicians.length === 0) {
+      throw new AppError("Não existe nenhum técnico cadastrado.")
+    }
+
+    const randomTechnician = technicians[Math.floor(Math.random() * technicians.length)]
 
     const call = await prisma.call.create({
       data: {
         title,
         description,
         user: { connect: { id: userId } },
-        technician: { connect: { id: technicianId } },
+        technician: { connect: { id: randomTechnician.id } },
         services: {
           create: [
             {
