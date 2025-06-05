@@ -6,9 +6,8 @@ describe("Call Status Controller", () => {
     let client_token: string
     let admin_token: string
     let technician_token: string
-    let call_id: string
-    let service_ids: string[] = []
     let service_id: string
+    let call_id: string
     let users_ids: string[] = []
     let tech_ids: string[] = []
 
@@ -52,9 +51,8 @@ describe("Call Status Controller", () => {
             })
 
         service_id = service.body.id
-        service_ids.push(service.body.id)
 
-        const technicians = await request(app)
+        const technician = await request(app)
             .post("/admins")
             .set("Authorization", `Bearer ${admin_token}`)
             .send({
@@ -64,21 +62,57 @@ describe("Call Status Controller", () => {
                 availableTimes: ["10:00", "11:00"],
             })
 
-        technician_token = technicians.body.token
-        tech_ids.push(technicians.body.id)
+        const technicianResponse = await request(app)
+            .post("/sessions")
+            .send({
+                email: "technician@test.com",
+                password: "123456",
+            })
 
-        expect(service_ids).not.toBeNull()
+        technician_token = technicianResponse.body.token
+        tech_ids.push(technicianResponse.body.id)
+        expect(service_id).not.toBeNull()
+
+        const call = await request(app)
+            .post("/calls")
+            .set("Authorization", `Bearer ${client_token}`)
+            .send({
+                title: "call test",
+                description: "call description",
+                serviceId: service_id
+            })
+        
+            call_id = call.body.id
     })
 
     it("Should update the status of the call", async () => {
         const response = await request(app)
-            .patch(`/call-status/:${service_id}`)
+            .patch(`/call-status/${call_id}`)
             .set("Authorization", `Bearer ${technician_token}`)
             .send({
                 newStatus: "InService"
             })
 
-        //TODO
-        
+        expect(response.status).toBe(200)
+        expect(response.body.message).toBe("Status atualizado com sucesso!")
+    })
+
+    afterAll(async () => {
+        await prisma.callService.deleteMany({});
+        await prisma.call.deleteMany({});
+        await prisma.technician.deleteMany({});
+        await prisma.service.deleteMany({});
+        await prisma.user.deleteMany({
+            where: {
+                email: {
+                    in: [
+                        "admintest@test.com",
+                        "client@test.com",
+                        "technician@test.com"
+                    ]
+                }
+            }
+        });
+
     })
 })
