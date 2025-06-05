@@ -7,7 +7,7 @@ import { servicesRoutes } from "./services-routes";
 import { callsRoutes } from "./calls-routes";
 import { clientsRoutes } from "./clients-routes";
 import { adminsRoutes } from "./admins-routes";
-import { callStatusRoutes } from "./call-status";
+import { callStatusRoutes } from "./call-status-routes";
 
 const routes = Router()
 
