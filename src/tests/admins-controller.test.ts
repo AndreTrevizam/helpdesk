@@ -4,7 +4,6 @@ import { prisma } from "@/database/prisma"
 
 describe("Admins Controller", () => {
   let admin_token: string
-  let technicians_id: string[] = []
 
   beforeAll(async () => {
     await request(app).post("/users").send({
