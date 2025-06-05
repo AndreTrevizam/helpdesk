@@ -84,7 +84,18 @@ describe("Calls Controller", () => {
         expect(callResponse.status).toBe(200)
     })
 
-    // TODO: index
+    it("Should list all calls", async () => {
+        const response = await request(app).get("/calls").set("Authorization", `Bearer ${client_token}`)
+
+        expect(response.status).toBe(200)
+        expect(response.body.callsWithTotal).toBeInstanceOf(Array)
+        expect(response.body.pagination).toMatchObject({
+            page: 1,
+            perPage: 5,
+            totalRecords: expect.any(Number),
+            totalPages: expect.any(Number),
+        })
+    })
 
     afterAll(async () => {
         // Limpar registros intermediários primeiro
