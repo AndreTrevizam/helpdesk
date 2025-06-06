@@ -1,6 +1,6 @@
 import request from "supertest"
 import { app } from "@/app"
-import { prisma } from "@/database/prisma"
+import { cleanDatabase } from "./setup"
 
 describe("Call Status Controller", () => {
     let client_token: string
@@ -8,8 +8,6 @@ describe("Call Status Controller", () => {
     let technician_token: string
     let service_id: string
     let call_id: string
-    let users_ids: string[] = []
-    let tech_ids: string[] = []
 
     beforeAll(async () => {
         const admin = await request(app).post("/users").send({
@@ -19,15 +17,11 @@ describe("Call Status Controller", () => {
             role: "Admin"
         })
 
-        users_ids.push(admin.body.id)
-
         const client = await request(app).post("/users").send({
             name: "Cliente Teste",
             email: "client@test.com",
             password: "123456",
         })
-
-        users_ids.push(client.body.id)
 
         const clientResponse = await request(app).post("/sessions").send({
             email: "client@test.com",
@@ -70,7 +64,6 @@ describe("Call Status Controller", () => {
             })
 
         technician_token = technicianResponse.body.token
-        tech_ids.push(technicianResponse.body.id)
         expect(service_id).not.toBeNull()
 
         const call = await request(app)
@@ -81,8 +74,8 @@ describe("Call Status Controller", () => {
                 description: "call description",
                 serviceId: service_id
             })
-        
-            call_id = call.body.id
+
+        call_id = call.body.id
     })
 
     it("Should update the status of the call", async () => {
@@ -98,21 +91,6 @@ describe("Call Status Controller", () => {
     })
 
     afterAll(async () => {
-        await prisma.callService.deleteMany({});
-        await prisma.call.deleteMany({});
-        await prisma.technician.deleteMany({});
-        await prisma.service.deleteMany({});
-        await prisma.user.deleteMany({
-            where: {
-                email: {
-                    in: [
-                        "admintest@test.com",
-                        "client@test.com",
-                        "technician@test.com"
-                    ]
-                }
-            }
-        });
-
+        await cleanDatabase()
     })
 })
