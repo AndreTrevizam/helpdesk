@@ -8,6 +8,7 @@ import { callsRoutes } from "./calls-routes";
 import { clientsRoutes } from "./clients-routes";
 import { adminsRoutes } from "./admins-routes";
 import { callStatusRoutes } from "./call-status-routes";
+import { uploadsRoutes } from "./uploads-routes";
 
 const routes = Router()
 
@@ -23,5 +24,6 @@ routes.use("/calls", callsRoutes)
 routes.use("/clients", clientsRoutes)
 routes.use("/admins", adminsRoutes)
 routes.use("/call-status", callStatusRoutes)
+routes.use("/uploads", uploadsRoutes)
 
 export { routes }
