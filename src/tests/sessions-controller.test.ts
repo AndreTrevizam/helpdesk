@@ -1,6 +1,6 @@
 import request from "supertest"
 import { app } from "@/app"
-import { prisma } from "@/database/prisma"
+import { cleanDatabase } from "./setup"
 
 describe("Sessions Controller", () => {
   let user_id: string
@@ -26,7 +26,6 @@ describe("Sessions Controller", () => {
   })
 
   afterAll(async () => {
-    await prisma.user.delete({ where: { id: user_id } })
-    await prisma.$disconnect()
+    await cleanDatabase()
   })
 })

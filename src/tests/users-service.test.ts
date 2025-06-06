@@ -1,6 +1,6 @@
 import request from "supertest"
 import { app } from "@/app"
-import { prisma } from "@/database/prisma"
+import { cleanDatabase } from "./setup"
 
 describe("UserService", () => {
   let user_id: string
@@ -42,13 +42,6 @@ describe("UserService", () => {
   })
 
   afterAll(async () => {
-    await prisma.user.deleteMany({
-      where: {
-        email: "test@test.com",
-      },
-    })
-
-    // Encerra a conexão com o banco
-    await prisma.$disconnect()
+    await cleanDatabase()
   })
 })

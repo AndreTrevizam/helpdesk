@@ -1,6 +1,6 @@
 import request from "supertest"
 import { app } from "@/app"
-import { prisma } from "@/database/prisma"
+import { cleanDatabase } from "./setup"
 
 describe("Services Controller", () => {
   let service_ids: string[] = []
@@ -76,8 +76,6 @@ describe("Services Controller", () => {
   })
 
   afterAll(async () => {
-    await prisma.service.deleteMany({ where: { id: { in: service_ids } } })
-    await prisma.user.delete({ where: { email: "admin@test.com" } })
-    await prisma.$disconnect()
+    await cleanDatabase()
   })
 })
