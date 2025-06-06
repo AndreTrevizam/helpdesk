@@ -41,7 +41,7 @@ class ClientsController {
       }
     })
 
-    res.json()
+    res.json({ message: "Senha alterada com sucesso!" })
   }
 }
 
