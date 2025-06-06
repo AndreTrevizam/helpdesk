@@ -1,6 +1,6 @@
 import request from "supertest"
 import { app } from "@/app"
-import { prisma } from "@/database/prisma"
+import { cleanDatabase } from "./setup"
 
 describe("Calls Controller", () => {
     let client_token: string
@@ -98,31 +98,6 @@ describe("Calls Controller", () => {
     })
 
     afterAll(async () => {
-        // Limpar registros intermediários primeiro
-        await prisma.callService.deleteMany({});
-
-        // Limpar chamados
-        await prisma.call.deleteMany({});
-
-        // Limpar técnicos (relação com User)
-        await prisma.technician.deleteMany({});
-
-        // Limpar serviços
-        await prisma.service.deleteMany({});
-
-        // Limpar usuários
-        await prisma.user.deleteMany({
-            where: {
-                email: {
-                    in: [
-                        "admintest@test.com",
-                        "client@test.com",
-                        "technician@test.com"
-                    ]
-                }
-            }
-        });
-
-        await prisma.$disconnect();
-    });
+    await cleanDatabase()
+  })
 })
