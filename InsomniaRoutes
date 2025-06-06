@@ -19,7 +19,7 @@ collection:
         meta:
           id: req_e1115d2e02a8475c80e2df4168ecebce
           created: 1748562195937
-          modified: 1748828155407
+          modified: 1749217687853
           isPrivate: false
           description: ""
           sortKey: -1748562195937
@@ -28,8 +28,8 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"name": "isa",
-            	"email": "isa@email.com",
+            	"name": "andre",
+            	"email": "andre@email.com",
             	"password": "123456"
             }
         headers:
@@ -147,7 +147,7 @@ collection:
         meta:
           id: req_6c5ce83766094c7bb7dfa22a172dccef
           created: 1748565145786
-          modified: 1749168196619
+          modified: 1749217663461
           isPrivate: false
           description: ""
           sortKey: -1748565145786
@@ -156,8 +156,8 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"email": "isa@email.com",
-            	"password": "12345678"
+            	"email": "andre@email.com",
+            	"password": "123456"
             }
         headers:
           - name: Content-Type
@@ -615,6 +615,56 @@ collection:
           rebuildPath: true
     environment:
       RESOURCE: call-status
+    environmentPropertyOrder:
+      "&":
+        - RESOURCE
+  - name: Uploads
+    meta:
+      id: fld_bf309308215e44fea908191f7f121316
+      created: 1749217604251
+      modified: 1749217617998
+      sortKey: -1749217604251
+      description: ""
+    children:
+      - url: "{{ _[''].BASE_URL }}/{{ _.RESOURCE }}"
+        name: Create
+        meta:
+          id: req_4f1e964d224f4984a6fbe71b8676bcbc
+          created: 1749217618511
+          modified: 1749222023295
+          isPrivate: false
+          description: ""
+          sortKey: -1749217618511
+        method: POST
+        body:
+          mimeType: multipart/form-data
+          params:
+            - id: pair_8479afa8e0eb49ec99ab6637f0225061
+              name: file
+              value: ""
+              description: ""
+              disabled: false
+              type: file
+              fileName: C:\Users\andre\Pictures\ctps.pdf
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+          - name: User-Agent
+            value: insomnia/11.2.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_6c5ce83766094c7bb7dfa22a172dccef',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+    environment:
+      RESOURCE: uploads
     environmentPropertyOrder:
       "&":
         - RESOURCE
