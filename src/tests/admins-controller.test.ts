@@ -1,12 +1,12 @@
 import request from "supertest"
 import { app } from "@/app"
-import { prisma } from "@/database/prisma"
+import { cleanDatabase } from "./setup"
 
 describe("Admins Controller", () => {
   let admin_token: string
 
   beforeAll(async () => {
-    await request(app).post("/users").send({
+    const admin = await request(app).post("/users").send({
       name: "admin test",
       email: "test@admin.com",
       password: "123456",
@@ -52,17 +52,6 @@ describe("Admins Controller", () => {
   })
 
   afterAll(async () => {
-    await prisma.technician.deleteMany()
-    await prisma.user.deleteMany({
-      where: {
-        email: {
-          in: [
-            "test@admin.com",
-            "technician@test.com"
-          ]
-        }
-      }
-    })
-    await prisma.$disconnect
+    await cleanDatabase()
   })
 })
